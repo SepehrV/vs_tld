@@ -1,0 +1,5 @@
+<launch>
+    <node pkg="vs_tld" name="test" type="test.py">
+        <remap from="sepehr" to="launch"/>
+    </node>
+</launch>
