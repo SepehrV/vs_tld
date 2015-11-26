@@ -43,7 +43,7 @@
         </group> 
      <group ns="cam2">
             <node pkg="camera1394" type="camera1394_node" name="cam2" clear_params="true">
-                <param name="guid"                value="00b09d01006fb2d9"/>
+                <param name="guid"                value="00b09d01006fb2d5"/>
                 <param name="video_mode"          value="640x480_rgb8"/>
                 <param name="iso_speed"           value="800"/>
                 <param name="frame_rate"          value="30"/>
