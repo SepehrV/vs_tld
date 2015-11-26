@@ -1,0 +1,88 @@
+<launch>
+        <arg name="view" default="false"/>
+        <group ns="cam1">
+            <node pkg="camera1394" type="camera1394_node" name="cam1" clear_params="true">
+                <param name="guid"                value="00b09d01006fb2d9"/>
+                <param name="video_mode"          value="640x480_rgb8"/>
+                <param name="iso_speed"           value="800"/>
+                <param name="frame_rate"          value="30"/>
+                <param name="auto_brightness"     value="2"/>
+                <param name="brightness"          value="0.0"/>
+                <param name="auto_exposure"       value="2"/>
+                <param name="exposure"            value="400.0"/>
+                <param name="auto_sharpness"      value="2"/>
+                <param name="sharpness"           value="1500.0"/>
+                <param name="auto_white_balance"  value="2"/>
+                <param name="white_balance_BU"    value="0.0"/>
+                <param name="white_balance_RV"    value="0.0"/>
+                <param name="auto_saturation"     value="2"/>
+                <param name="saturation"          value="0.0"/>
+                <param name="auto_gamma"          value="2"/>
+                <param name="gamma"               value="1000"/>
+                <param name="auto_shutter"        value="2"/>
+                <param name="shutter"             value="500.0"/>
+                <param name="auto_gain"           value="2"/>
+                <param name="gain"                value="164.0"/>
+     
+                <!-- Values below did not show in coriander for  Grasshopper cameras
+                     Taken from default parameters when initializing camera1394 node
+                -->
+     
+                <param name="auto_hue"            value="2"/>
+                <param name="hue"                 value="0.0"/>
+                <param name="auto_focus"          value="5"/>
+                <param name="focus"               value="0.0"/>
+                <param name="auto_iris"           value="5"/>
+                <param name="iris"                value="8.0"/>
+                <param name="auto_pan"            value="5"/>
+                <param name="pan"                 value="12.0"/>
+                <param name="auto_zoom"           value="5"/>
+                <param name="zoom"                value="0.0"/>
+            </node>
+            <node if="$(arg view)" pkg="image_view" type="image_view" name="right_view" args=" image:=camera/image_raw autosize:=true" /> 
+        </group> 
+     <group ns="cam2">
+            <node pkg="camera1394" type="camera1394_node" name="cam2" clear_params="true">
+                <param name="guid"                value="00b09d01006fb2d9"/>
+                <param name="video_mode"          value="640x480_rgb8"/>
+                <param name="iso_speed"           value="800"/>
+                <param name="frame_rate"          value="30"/>
+                <param name="auto_brightness"     value="2"/>
+                <param name="brightness"          value="0.0"/>
+                <param name="auto_exposure"       value="2"/>
+                <param name="exposure"            value="400.0"/>
+                <param name="auto_sharpness"      value="2"/>
+                <param name="sharpness"           value="1500.0"/>
+                <param name="auto_white_balance"  value="2"/>
+                <param name="white_balance_BU"    value="0.0"/>
+                <param name="white_balance_RV"    value="0.0"/>
+                <param name="auto_saturation"     value="2"/>
+                <param name="saturation"          value="0.0"/>
+                <param name="auto_gamma"          value="2"/>
+                <param name="gamma"               value="1000"/>
+                <param name="auto_shutter"        value="2"/>
+                <param name="shutter"             value="500.0"/>
+                <param name="auto_gain"           value="2"/>
+                <param name="gain"                value="164.0"/>
+     
+                <!-- Values below did not show in coriander for  Grasshopper cameras
+                     Taken from default parameters when initializing camera1394 node
+                -->
+     
+                <param name="auto_hue"            value="2"/>
+                <param name="hue"                 value="0.0"/>
+                <param name="auto_focus"          value="5"/>
+                <param name="focus"               value="0.0"/>
+                <param name="auto_iris"           value="5"/>
+                <param name="iris"                value="8.0"/>
+                <param name="auto_pan"            value="5"/>
+                <param name="pan"                 value="12.0"/>
+                <param name="auto_zoom"           value="5"/>
+                <param name="zoom"                value="0.0"/>
+            </node>
+            <node if="$(arg view)" pkg="image_view" type="image_view" name="right_view" args=" image:=camera/image_raw autosize:=true" /> 
+        </group> 
+ 
+   </launch>
+
+
