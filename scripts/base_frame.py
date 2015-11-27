@@ -20,8 +20,8 @@ class gui:
         #initializng the trackers
         self.sub_tracker1 = rospy.Subscriber("/cam1/tld_tracker_object", BoundingBox, self.trackerPos1)
         self.sub_tracker2 = rospy.Subscriber("/cam2/tld_tracker_object", BoundingBox, self.trackerPos2)
-        self.pub_bb1 = rospy.Publisher('/cam1/tld_gui_bb', Target, queue_size=10)
-        self.pub_bb2 = rospy.Publisher('/cam2/tld_gui_bb', Target, queue_size=10)
+        self.pub_bb1 = rospy.Publisher('/cam1/tld_gui_bb', Target, queue_size=0)
+        self.pub_bb2 = rospy.Publisher('/cam2/tld_gui_bb', Target, queue_size=0)
         #initialzing GUI variables
         self.shutdown = 0
         self.rate = rospy.Rate(30)
@@ -31,6 +31,8 @@ class gui:
         self.cropping = False
         self.command = 0
         self.show1_ready = True
+        self.show2_ready = True
+
     def mainLoop(self):
         while not self.shutdown:
             #self.command = cv2.waitKey(10)
@@ -87,28 +89,32 @@ class gui:
             return
         self.show1_ready = False
         try:
-            cv_image = self.bridge.imgmsg_to_cv2(data, 'passthrough')
-            b,g,r = cv2.split(cv_image)       # get b,g,r
-            cv_image = cv2.merge([r,g,b])
+            cv_image = self.bridge.imgmsg_to_cv2(data, 'bgr8')
+            #b,g,r = cv2.split(cv_image)       # get b,g,r
+            #cv_image = cv2.merge([r,g,b])
             self.currentImage1 = cv_image
         except CvBridgeError, e:
             print e
         if self.cropping is False:
             cv2.imshow('cam1', cv_image)
-            self.command = cv2.waitKey(20)
+            self.command = cv2.waitKey(1)
             self.show1_ready = True
 
     def showImage2(self, data):
+        if self.show2_ready == False:
+            return
+        self.show2_ready = False
         try:
-            cv_image = self.bridge.imgmsg_to_cv2(data, 'passthrough')
-            b,g,r = cv2.split(cv_image)       # get b,g,r
-            cv_image = cv2.merge([r,g,b])
+            cv_image = self.bridge.imgmsg_to_cv2(data, 'bgr8')
+            #b,g,r = cv2.split(cv_image)       # get b,g,r
+            #cv_image = cv2.merge([r,g,b])
             self.currentImage2 = cv_image
         except CvBridgeError, e:
             print e
         if self.cropping is False:
             cv2.imshow('cam2', cv_image)
-            self.command = cv2.waitKey(20)
+            self.command = cv2.waitKey(1)
+            self.show2_ready = True
 
     def trackerPos1(self, data):
         self.refPt1[0] = (data.x, data.y)
