@@ -1,39 +1,6 @@
 <launch>
         <arg name="view" default="false"/>
         <group ns="cam1">
-            
-            <!-- declare arg to be passed in -->
-            <arg name="load_model" default="false"/>
-            <arg name="auto_face_detection" default="false"/>
-            <arg name="model_import_file" default="/home/tld_models/sample"/>
-            <arg name="model_export_file" default="/home/tld_models/sample"/>
-            <arg name="cascade_path" default=
-                "$(env ROS_ROOT)/../OpenCV/haarcascades/haarcascade_frontalface_alt.xml"/>
-            <arg name="image_topic" default="/cam1/camera/image_raw"/>
-
-            <!-- Nodes -->
-            <node name="ros_tld_tracker_node" pkg="tld_tracker" type="tld_tracker_node"
-                output="screen">
-                <!-- remap of topics -->
-                <remap from="image" to="$(arg image_topic)"/>
-                <remap from="bounding_box" to="tld_gui_bb"/>
-                <remap from="cmds" to="tld_gui_cmds"/>
-
-                <!-- declare param and read value of arg-->
-                <param name="showOutput" value="true" type="bool"/>
-                <param name="loadModel" value="$(arg load_model)" type="bool"/>
-                <param name="autoFaceDetection" value="$(arg auto_face_detection)" type="bool"/>
-                <param name="modelImportFile" value="$(arg model_import_file)" type="string"/>
-                <param name="exportModelAfterRun" value="false" type="bool"/>
-                <param name="modelExportFile" value="$(arg model_export_file)" type="string"/>
-                <param name="cascadePath" value="$(arg cascade_path)" type="string"/>
-                <param name="x" value="200" type="int"/>
-                <param name="y" value="200" type="int"/>
-                <param name="width" value="200" type="int"/>
-                <param name="height" value="200" type="int"/>
-                <param name="correctBB" value="false" type="bool"/>
-            </node>
-
             <node pkg="camera1394" type="camera1394_node" name="cam1" clear_params="true">
                 <param name="guid"                value="00b09d01006fb2d9"/>
                 <param name="video_mode"          value="640x480_rgb8"/>
@@ -72,9 +39,44 @@
                 <param name="auto_zoom"           value="5"/>
                 <param name="zoom"                value="0.0"/>
             </node>
-            <node if="$(arg view)" pkg="image_view" type="image_view" name="right_view" args=" image:=camera/image_raw autosize:=true" /> 
-        </group> 
-     
+            <node if="$(arg view)" pkg="image_view" type="image_view" name="right_view" args=" image:=camera/image_raw autosize:=true" />
+
+
+            <param name="camera_number" value="/cam1" />
+            <node pkg="vs_tld" type="base_frame.py" name="base_frame1" output="screen" >
+                <param name="image_topic" value="/camera/image_raw" />
+                <param name="window_pos" value="0" />
+            </node>
+        	<!-- declare arg to be passed in -->
+        <arg name="load_model" default="false"/>
+        <arg name="auto_face_detection" default="false"/>
+        <arg name="model_import_file" default="/home/tld_models/sample"/>
+        <arg name="model_export_file" default="/home/tld_models/sample"/>
+        <arg name="cascade_path" default=
+            "$(env ROS_ROOT)/../OpenCV/haarcascades/haarcascade_frontalface_alt.xml"/>
+        <arg name="image_topic" default="/cam1/camera/image_raw"/>
+
+        <!-- Nodes -->
+        <node name="ros_tld_tracker_node" pkg="tld_tracker" type="tld_tracker_node"
+            output="screen">
+            <!-- remap of topics -->
+            <remap from="image" to="$(arg image_topic)"/>
+            <remap from="bounding_box" to="tld_gui_bb"/>
+            <remap from="cmds" to="tld_gui_cmds"/>
+
+            <!-- declare param and read value of arg-->
+            <param name="showOutput" value="true" type="bool"/>
+            <param name="loadModel" value="$(arg load_model)" type="bool"/>
+            <param name="autoFaceDetection" value="$(arg auto_face_detection)" type="bool"/>
+            <param name="modelImportFile" value="$(arg model_import_file)" type="string"/>
+            <param name="exportModelAfterRun" value="false" type="bool"/>
+            <param name="modelExportFile" value="$(arg model_export_file)" type="string"/>
+            <param name="cascadePath" value="$(arg cascade_path)" type="string"/>
+            <param name="x" value="200" type="int"/>
+            <param name="y" value="200" type="int"/>
+            <param name="width" value="200" type="int"/>
+            <param name="height" value="200" type="int"/>
+            <param name="correctBB" value="false" type="bool"/>
+        </node>
+ </group> 
    </launch>
-
-

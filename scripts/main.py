@@ -7,6 +7,7 @@ from cv_bridge import CvBridge, CvBridgeError
 from tld_msgs.msg import Target, BoundingBox
 from base_frame import gui
 
-print ("initializing gui")
-G = gui()
-G.mainLoop()
+
+if __name__ == '__main__':
+    G = gui()
+    G.mainLoop()

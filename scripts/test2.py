@@ -10,9 +10,9 @@ from cv_bridge import CvBridge, CvBridgeError
 class image_converter:
     def __init__(self):
         print "image converter"
-        cv2.namedWindow("Image window", 1)
+        cv2.namedWindow("Image window2", 1)
         self.bridge = CvBridge()
-        self.image_sub = rospy.Subscriber("/cam1/camera/image_raw",Image,self.callback)
+        self.image_sub = rospy.Subscriber("/cam2/camera/image_raw",Image,self.callback)
 
     def callback(self,data):
         try:
@@ -26,7 +26,7 @@ class image_converter:
 def main(args):
     print "main"
     ic = image_converter()
-    rospy.init_node('image_converter', anonymous=True)
+    rospy.init_node('image_converter2', anonymous=True)
     try:
         rospy.spin()
     except KeyboardInterrupt:
