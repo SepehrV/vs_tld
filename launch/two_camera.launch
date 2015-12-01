@@ -158,9 +158,9 @@
             <param name="height" value="200" type="int"/>
             <param name="correctBB" value="false" type="bool"/>
         </node>
-
-
         </group> 
+        
+        <node name="vs_error" pkg="vs_tld" type="vs_error.py" output="screen" />
  
    </launch>
 

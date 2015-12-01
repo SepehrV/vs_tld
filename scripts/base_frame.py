@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 import rospy
+import math
+import numpy as np
 import cv2
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 from tld_msgs.msg import Target, BoundingBox
+from vs_tld.msg import Image_error
 
 class gui:
     def __init__ (self):
@@ -17,14 +20,17 @@ class gui:
         self.tracking = False
         self.command = 0
         self.ui_name = rospy.get_param('camera_number')
+        self.image_size = None
         #initializing camera topics and windows
         self.topic = rospy.get_param('camera_number') + rospy.get_param('~image_topic')
         self.sub = rospy.Subscriber(self.topic ,Image, self.showImage)
+        self.pub_error = rospy.Publisher(rospy.get_param('camera_number')+'/image_error', Image_error, queue_size=1)
         cv2.namedWindow(self.ui_name, 1)
         cv2.moveWindow(self.ui_name, int(rospy.get_param('~window_pos')), 0)
         #initializng the trackers
         self.sub_tracker = rospy.Subscriber(rospy.get_param('camera_number') + "/tld_tracked_object", BoundingBox, self.trackerPos)
         self.pub_bb = rospy.Publisher(rospy.get_param('camera_number') + '/tld_gui_bb', Target, queue_size=0)
+
 
     def interface(self):
         if chr(self.command & 255) == 'c':
@@ -59,6 +65,8 @@ class gui:
         try:
             cv_image = self.bridge.imgmsg_to_cv2(data, 'bgr8')
             self.currentImage = cv_image
+            if self.image_size == None:
+                self.image_size = self.currentImage.shape
         except CvBridgeError, e:
             print e
         if self.tracking:
@@ -73,11 +81,19 @@ class gui:
 
     def trackerPos(self, data):
         self.track_data = data
-        #cv2.imshow(self.ui_name, self.currentImage)
+        self.calc_error(data)
 
+    def calc_error(self, data):
+        #print ("data = ", data)
+        #print ("image_size = ", self.image_size)
+        self.error = ((data.x - float(self.image_size[1])/2)/self.image_size[1], (data.y - float(self.image_size[0])/2)/float(self.image_size[0]), 0.25 - math.sqrt(float(data.height)*float(data.width)/float((self.image_size[0])*float(self.image_size[1]))) )
+        msg = Image_error()
+        msg.ex = self.error[0]
+        msg.ey = self.error[1]
+        msg.BB_size = self.error[2]
+        self.pub_error.publish(msg)
 def base_frame():
     G = gui()
-    #G.mainLoop()
 
 if __name__ == '__main__':
     try:
