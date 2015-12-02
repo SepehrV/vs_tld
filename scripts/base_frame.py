@@ -30,12 +30,14 @@ class gui:
         #initializng the trackers
         self.sub_tracker = rospy.Subscriber(rospy.get_param('camera_number') + "/tld_tracked_object", BoundingBox, self.trackerPos)
         self.pub_bb = rospy.Publisher(rospy.get_param('camera_number') + '/tld_gui_bb', Target, queue_size=0)
-
+        self.record_desired = None
 
     def interface(self):
         if chr(self.command & 255) == 'c':
             if self.currentImage is not None:
                 cv2.setMouseCallback(self.ui_name, self.click_and_crop)
+        if chr(self.command & 255) == 'r':
+            self.record_desired = [self.track_data.x,self.track_data.y,math.sqrt(float(self.track_data.height)*float(self.track_data.width))]
 
     def click_and_crop(self, event, x, y, flags, param):
         if event == cv2.EVENT_LBUTTONDOWN:
@@ -84,9 +86,10 @@ class gui:
         self.calc_error(data)
 
     def calc_error(self, data):
-        #print ("data = ", data)
-        #print ("image_size = ", self.image_size)
-        self.error = ((data.x - float(self.image_size[1])/2)/self.image_size[1], (data.y - float(self.image_size[0])/2)/float(self.image_size[0]), 0.25 - math.sqrt(float(data.height)*float(data.width)/float((self.image_size[0])*float(self.image_size[1]))) )
+        if self.record_desired is not None:
+            self.error = (float((data.x - self.record_desired[0]))/self.image_size[1], float((data.y - self.record_desired[1]))/self.image_size[0],(math.sqrt(float(data.height)*float(data.width) - self.record_desired[2])/float((self.image_size[0])*float(self.image_size[1]))))
+        else:
+            self.error = ((data.x - float(self.image_size[1])/2)/self.image_size[1], (data.y - float(self.image_size[0])/2)/float(self.image_size[0]), 0.25 - math.sqrt(float(data.height)*float(data.width)/float((self.image_size[0])*float(self.image_size[1]))) )
         msg = Image_error()
         msg.ex = self.error[0]
         msg.ey = self.error[1]
